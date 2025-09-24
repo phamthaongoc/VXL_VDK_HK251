@@ -41,8 +41,8 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-extern int state;
 extern int count;
+extern int hour, minute, second;
 
 /* USER CODE END EC */
 
