@@ -43,7 +43,8 @@ extern "C" {
 /* USER CODE BEGIN EC */
 extern int state;
 extern int count;
-
+extern int tick;
+extern int seg_count;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
