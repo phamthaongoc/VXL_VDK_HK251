@@ -41,8 +41,6 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-extern int state;
-extern int count;
 
 /* USER CODE END EC */
 
@@ -61,18 +59,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define LED_RED_Pin GPIO_PIN_5
 #define LED_RED_GPIO_Port GPIOA
-#define LED_YELLOW_Pin GPIO_PIN_6
-#define LED_YELLOW_GPIO_Port GPIOA
-#define LED_GREEN_Pin GPIO_PIN_7
-#define LED_GREEN_GPIO_Port GPIOA
-#define SEG0_Pin GPIO_PIN_0
-#define SEG0_GPIO_Port GPIOB
-#define LED_RED2_Pin GPIO_PIN_8
-#define LED_RED2_GPIO_Port GPIOA
-#define LED_YELLOW2_Pin GPIO_PIN_9
-#define LED_YELLOW2_GPIO_Port GPIOA
-#define LED_GREEN2_Pin GPIO_PIN_10
-#define LED_GREEN2_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
