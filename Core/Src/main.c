@@ -1,65 +1,63 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define ON  GPIO_PIN_RESET
-#define OFF GPIO_PIN_SET
+#define ON   GPIO_PIN_RESET
+#define OFF  GPIO_PIN_SET
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+static const uint8_t seg_code[10] = {
+		0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
-//void display(int num, GPIO_PinState state );
-void clearAllClock(void);
-void setNumberOnClock(int num);
-void clearNumberOnClock(int num);
 
+void led(GPIO_TypeDef* port, int pin, GPIO_PinState state);
+void display7SEG(int num);
+void display7SEG_2(int num);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
 /* USER CODE END 0 */
 
 /**
@@ -70,7 +68,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -79,56 +76,137 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-
   /* USER CODE BEGIN 2 */
-  int ms_count = 0; ;
-    int hour = 0, minute = 0, second = 0;
-   // clearAllClock();
+int state = 4;
+int count = 0;
+int count_down = 0;
+int count_down_ = 0;
 
+//int seg_count = 50;
+//int tick = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+ while (1)
+ {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
-	  clearAllClock();
-	  setNumberOnClock(hour % 12);
-	  setNumberOnClock(minute % 12);
-	  setNumberOnClock(second % 12);
-	  HAL_Delay(10);
-	  ms_count += 10;
-	  if(ms_count >= 100) {
-		  ms_count = 0;
-		  second++;
-		  if(second >= 60) {
-			  second = 0;
-			  minute++;
-			  //if (minute == 59) HAL_Delay(100);
-			  if(minute >= 12) {
-				  minute = 0;
-				  hour++;
-				  if(hour >= 12) hour = 0;
-			  }
-	             }
-	         }
-  }
 
+	  switch(state){
+	  case 4:
+		 // display7SEG(0);
+		  //display7SEG_2(0);
+		  led(LED_GREEN_GPIO_Port, LED_GREEN_Pin, ON);
+		  led(LED_RED2_GPIO_Port, LED_RED2_Pin, ON);
+		  led(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, OFF);
+		  		  led(LED_RED_GPIO_Port, LED_RED_Pin, OFF);
+		  		  led(LED_GREEN2_GPIO_Port, LED_GREEN2_Pin, OFF);
+		  		  led(LED_YELLOW2_GPIO_Port, LED_YELLOW2_Pin, OFF);
+		  count = 300;
+		  count_down = 300;
+		  count_down_ = 500;
+		  state = 0;
+		  break;
+
+
+
+	  case 0:
+		  led(LED_GREEN_GPIO_Port, LED_GREEN_Pin, ON);
+		  led(LED_RED2_GPIO_Port, LED_RED2_Pin, ON);
+		  led(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, OFF);
+		  led(LED_RED_GPIO_Port, LED_RED_Pin, OFF);
+		  led(LED_GREEN2_GPIO_Port, LED_GREEN2_Pin, OFF);
+		  led(LED_YELLOW2_GPIO_Port, LED_YELLOW2_Pin, OFF);
+		  count--;
+		  count_down --;
+		  count_down_--;
+		  if (count_down <= 0) count_down = 200;
+		  if (count <= 0){
+			  state = 1;
+			  count = 200;
+		  }
+
+		  break;
+	  case 1:
+
+		  led(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, ON);
+		  led(LED_RED2_GPIO_Port, LED_RED2_Pin, ON);
+		  led(LED_GREEN_GPIO_Port, LED_GREEN_Pin, OFF);
+		  		  led(LED_YELLOW2_GPIO_Port, LED_YELLOW2_Pin, OFF);
+		  		  led(LED_RED_GPIO_Port, LED_RED_Pin, OFF);
+		  		  led(LED_GREEN2_GPIO_Port, LED_GREEN2_Pin, OFF);
+
+		  count--;
+		  count_down --;
+		  count_down_--;
+		  if (count_down <= 0) count_down = 500;
+		  if (count_down_ <= 0) count_down_ = 300;
+		  if (count <= 0){
+			  state = 2;
+			  count = 300;
+		  }
+		  break;
+	  case 2:
+		  led(LED_RED_GPIO_Port, LED_RED_Pin, ON);
+		  led(LED_GREEN2_GPIO_Port, LED_GREEN2_Pin, ON);
+		  led(LED_GREEN_GPIO_Port, LED_GREEN_Pin, OFF);
+		  led(LED_RED2_GPIO_Port, LED_RED2_Pin, OFF);
+		  led(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, OFF);
+		  led(LED_YELLOW2_GPIO_Port, LED_YELLOW2_Pin, OFF);
+		  count--;
+		  count_down --;
+		  count_down_--;
+		  if (count_down_ <= 0 ) count_down_ = 200;
+		  if (count <= 0){
+			  state = 3;
+			  count = 200;
+		  }
+		  break;
+	  case 3:
+		  led(LED_RED_GPIO_Port, LED_RED_Pin, ON);
+		  led(LED_YELLOW2_GPIO_Port, LED_YELLOW2_Pin, ON);
+		  led(LED_GREEN_GPIO_Port, LED_GREEN_Pin, OFF);
+		  led(LED_RED2_GPIO_Port, LED_RED2_Pin, OFF);
+		  led(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin, OFF);
+		  led(LED_GREEN2_GPIO_Port, LED_GREEN2_Pin, OFF);
+
+		  count--;
+		  count_down --;
+		  count_down_--;
+		  if (count_down <= 0) count_down = 300;
+		  if (count_down_ <= 0) count_down_ = 500;
+		  if(count <= 0){
+			  state = 0;
+			  count = 300;
+
+		  }
+		  break;
+
+	  default: break;
+	  }
+
+	  display7SEG(count_down_ / 100);
+	  display7SEG_2(count_down / 100);
+
+	  HAL_Delay(10);
+
+
+
+
+ }
   /* USER CODE END 3 */
 }
 
@@ -177,7 +255,6 @@ static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   /* USER CODE BEGIN MX_GPIO_Init_1 */
-
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
@@ -185,9 +262,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4|LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin
-                          |LED_RED2_Pin|LED_YELLOW2_Pin|LED_GREEN2_Pin|GPIO_PIN_11
-                          |GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin|LED_RED2_Pin
+                          |LED_YELLOW2_Pin|LED_GREEN2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, SEG0_Pin|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_10
@@ -195,12 +271,10 @@ static void MX_GPIO_Init(void)
                           |GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7
                           |GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PA4 LED_RED_Pin LED_YELLOW_Pin LED_GREEN_Pin
-                           LED_RED2_Pin LED_YELLOW2_Pin LED_GREEN2_Pin PA11
-                           PA12 PA13 PA14 PA15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_4|LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin
-                          |LED_RED2_Pin|LED_YELLOW2_Pin|LED_GREEN2_Pin|GPIO_PIN_11
-                          |GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+  /*Configure GPIO pins : LED_RED_Pin LED_YELLOW_Pin LED_GREEN_Pin LED_RED2_Pin
+                           LED_YELLOW2_Pin LED_GREEN2_Pin */
+  GPIO_InitStruct.Pin = LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin|LED_RED2_Pin
+                          |LED_YELLOW2_Pin|LED_GREEN2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -220,37 +294,36 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
-
   /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
-void setNumberOnClock(int num){
-	HAL_GPIO_WritePin(GPIOA, (1 << (num + 4)), ON);
-}
-void clearNumberOnClock(int num) {
-    if (num >= 0 && num < 12)
-    	HAL_GPIO_WritePin(GPIOA, (1 << (num + 4)), OFF);
+
+void led(GPIO_TypeDef* port, int pin, GPIO_PinState state){
+    HAL_GPIO_WritePin(port, pin, state);
 }
 
-void clearAllClock(void) {
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4,  GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5,  GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6,  GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7,  GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8,  GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9,  GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_13, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_14, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+void display7SEG(int num){
+	    uint8_t code = seg_code[num];
+	    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, (code & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, (code & 0x02) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, (code & 0x04) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, (code & 0x08) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, (code & 0x10) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, (code & 0x20) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, (code & 0x40) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
+void display7SEG_2(int num) {
 
-
-
-
+    uint8_t code = seg_code[num];
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7,  (code & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8,  (code & 0x02) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9,  (code & 0x04) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10, (code & 0x08) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_11, (code & 0x10) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, (code & 0x20) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, (code & 0x40) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}
 /* USER CODE END 4 */
 
 /**
@@ -260,11 +333,11 @@ void clearAllClock(void) {
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+ /* User can add his own implementation to report the HAL error return state */
+ __disable_irq();
+ while (1)
+ {
+ }
   /* USER CODE END Error_Handler_Debug */
 }
 #ifdef USE_FULL_ASSERT
@@ -278,8 +351,8 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+ /* User can add his own implementation to report the file name and line number,
+    ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
