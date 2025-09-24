@@ -43,8 +43,8 @@ extern "C" {
 /* USER CODE BEGIN EC */
 extern int state;
 extern int count;
-extern count_down;
-extern count_down_;
+extern int count_down;
+extern int count_down_;
 
 /* USER CODE END EC */
 
@@ -85,3 +85,4 @@ void Error_Handler(void);
 #endif
 
 #endif /* __MAIN_H */
+
