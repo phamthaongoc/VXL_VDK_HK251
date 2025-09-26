@@ -109,8 +109,8 @@ int main(void)
 
 	  clearAllClock();
 	  setNumberOnClock(hour % 12);
-	  setNumberOnClock(minute % 12);
-	  setNumberOnClock(second % 12);
+	  setNumberOnClock((minute/5) % 12);
+	  setNumberOnClock((second/5) % 12);
 	  HAL_Delay(10);
 	  count += 10;
 	  if(count >= 100) {
@@ -280,3 +280,4 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
